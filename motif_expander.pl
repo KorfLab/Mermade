@@ -164,7 +164,7 @@ sub get_matching_seqs {
 BEGIN {
 	die "MERMADE environment not set" unless defined $ENV{MERMADE} and -d $ENV{MERMADE};
 	my $seqlogo = `which seqlogo`;
-	die "seqlogo not in path" if not $seqlogo;
+	die "\nseqlogo not in path" if not $seqlogo;
 }
 
 

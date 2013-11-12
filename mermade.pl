@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 use strict; use warnings 'FATAL' => 'all';
-use DataBrowser;
+#use DataBrowser;
+use lib "$ENV{MERMADE}";
+use Mermade;
 use Getopt::Std;
 use vars qw($opt_n $opt_m $opt_b $opt_p);
 getopts('m:e:p:');
@@ -58,7 +60,7 @@ foreach my $k1 (sort {$kstats{$b}{poisson} <=> $kstats{$a}{poisson}} keys %kstat
 	# gather friends
 	my @friend;
 	foreach my $k2 (keys %kstats) {
-		if (distance($k1, $k2) <= $EDIT) {
+		if (Mermade::distance($k1, $k2) <= $EDIT) {
 			push @friend, $k2 ;
 			$kstats{$k2}{friended} = 1;
 		}
@@ -90,66 +92,9 @@ foreach my $motif (@motif) {
 	
 	# text output to STDOUT
 	print $mid, "\n";
-	display($motif);
+	Mermade::display($motif);
 }
 
 exit(0);
 
-###############################################################################
-# subroutines
-###############################################################################
-
-# Not edit distance - does not account for indels
-sub distance {
-	my ($k1, $k2) = @_;
-		
-	my $mismatch = 0;
-	for (my $i = 0; $i < length($k1); $i++) {
-		$mismatch++ if substr($k1, $i, 1) ne substr($k2, $i, 1);
-	}
-	
-	return $mismatch;
-}
-
-sub display {
-	my ($motif) = @_;
-	
-	foreach my $nt (@Alph) {
-		print $nt;
-		for (my $i = 0; $i < @$motif; $i++) {
-			no warnings;
-			printf " %7d", $motif->[$i]{$nt};
-			use warnings;
-		}
-		print "\n";
-	}
-		
-	print "i";
-	my $sum = 0;
-	for (my $i = 0; $i < @$motif; $i++) {
-		my $info = info($motif->[$i]);
-		printf "   %.3f", $info;
-		$sum += $info;
-	}
-	printf "\nSum=%.3f bits\n", $sum;
-}
-
-sub info {
-	my ($c) = @_;
-		
-	my %p;
-	my $total;
-	foreach my $k (keys %$c) {$total += $c->{$k}}
-	foreach my $k (keys %$c) {
-		$p{$k} = $c->{$k} / $total if $c->{$k} > 0;
-	}
-	
-	my $H = 0;
-	foreach my $k (keys %p) {
-		$H += $p{$k} * log($p{$k});
-	}
-	$H /= log(2);
-	
-	return 2 + $H;
-}
 

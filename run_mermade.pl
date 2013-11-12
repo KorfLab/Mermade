@@ -153,14 +153,14 @@ foreach my $file (@barcode) {
 		my $fg = "$WDIR/counts/$bc.$k.counts";
 		run("$kcounter -k $k $file > $fg") unless -s $fg;
 	
-		# select k-mers
+		# select seed k-mers
 		print STDERR "s" unless $QUIET;
 		my $bg = "$WDIR/counts/bg.$k.counts";
 		my $ks = "$WDIR/kstats/$bc.$k.kstats";
 		run("$kselector -dq $fg $bg > $ks") unless -s $ks;
 		next unless -s $ks > 100;
 		
-		# build motifs
+		# build seed motifs
 		print STDERR "m" unless $QUIET;
 		my $mm = "$WDIR/motifs/$bc.$k.mermade";
 		run("$mermade -p $WDIR/motifs/$bc $ks > $mm") unless -s $mm;
@@ -185,14 +185,6 @@ foreach my $file (@barcode) {
 print STDERR "creating database..." unless $QUIET;
 run("$creator $WDIR $TABLE $OUTFILE");
 print STDERR "done\n" unless $QUIET;
-
-
-####################
-# generate reports #
-####################
-
-# code needed
-
 
 
 ##############################################################################
