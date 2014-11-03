@@ -18,7 +18,7 @@ my %opt = (
 	'a' => 0,
 );
 
-getopts('k:a', \%opt);
+getopts('k:m:a', \%opt);
 
 die "
 usage: kmer_counter.pl [options] <raw sequence>
